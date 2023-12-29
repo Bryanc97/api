@@ -128,3 +128,16 @@ app.post('/obtenerIdUsuario', async(req, res) => {
 app.listen(port, () => {
     console.log(`Servidor en ejecución en http://localhost:${port}`);
 });
+
+
+app.get('/usuarios', async(req, res) => {
+    try {
+        const getUsersQuery = 'SELECT * FROM tb_usuarios';
+        const users = await pool.query(getUsersQuery);
+
+        return res.status(200).json(users.rows);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
