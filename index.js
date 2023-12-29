@@ -1,13 +1,16 @@
 import express from 'express'
 import { config } from 'dotenv'
 import pg from 'pg'
+import cors from 'cors';
 
 config()
+
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json()); // Middleware para parsear solicitudes JSON
+app.use(cors()); // Enable CORS for all routes
 
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
@@ -19,6 +22,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/ping', async(req, res) => {
+    const result = await pool.query('SELECT * FROM tb_usuarios')
+    return res.json(result.rows[0])
+})
+
+app.get('/ping', async(req, res) => {
     try {
         const result = await pool.query('SELECT * FROM tb_usuarios');
         return res.json(result.rows);
@@ -27,7 +35,6 @@ app.get('/ping', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
-
 app.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
