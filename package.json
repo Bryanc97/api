@@ -1,4 +1,7 @@
 {
+    "engines": {
+    "node": "14.x"
+  },
     "name": "apinode",
     "version": "1.0.0",
     "description": "",
@@ -11,6 +14,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "pg": "^8.11.3"
