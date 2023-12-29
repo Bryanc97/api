@@ -52,7 +52,9 @@ app.get('/usuarios', async(req, res) => {
 });
 
 
-
+app.get('/login', (req, res) => {
+    res.status(405).json({ error: 'Method Not Allowed', message: 'Use POST request for login' });
+});
 app.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
