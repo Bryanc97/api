@@ -8,11 +8,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors({
-    origin: 'https://shyest-economies.000webhostapp.com',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-}));
 
 
 const pool = new pg.Pool({
