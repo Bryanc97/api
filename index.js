@@ -35,7 +35,7 @@ app.get('/ping', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
-app.post('/login', async(req, res) => {
+app.get('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
 
