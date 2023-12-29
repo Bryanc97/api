@@ -27,7 +27,7 @@ app.get('/ping', async(req, res) => {
     return res.json(result.rows[0])
 })
 
-app.get('/ping', async(req, res) => {
+app.get('/ping2', async(req, res) => {
     try {
         const result = await pool.query('SELECT * FROM tb_usuarios');
         return res.json(result.rows);
