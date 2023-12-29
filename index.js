@@ -19,9 +19,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/ping', async(req, res) => {
-    const result = await pool.query('SELECT * FROM tb_usuarios')
-    return res.json(result.rows)
-})
+    try {
+        const result = await pool.query('SELECT * FROM tb_usuarios');
+        return res.json(result.rows);
+    } catch (error) {
+        console.error('Error al obtener datos de la tabla:', error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
 
 app.post('/login', async(req, res) => {
     try {
