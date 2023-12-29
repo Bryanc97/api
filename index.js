@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 app.get('/ping', async(req, res) => {
     const result = await pool.query('SELECT * FROM tb_usuarios')
-    return res.json(result.rows[0])
+    return res.json(result.rows)
 })
 
 app.post('/login', async(req, res) => {
