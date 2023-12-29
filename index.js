@@ -1,11 +1,9 @@
 import express from 'express'
 import { config } from 'dotenv'
 import pg from 'pg'
-import cors from 'cors';
 
 config()
 
-const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
