@@ -5,25 +5,19 @@ import cors from 'cors';
 
 config()
 
-
+const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json()); // Middleware para parsear solicitudes JSON
-app.use(cors({
-  origin: 'https://shyest-economies.000webhostapp.com', // Reemplaza con tu dominio
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-}));
+app.use(express.json());
+app.use(cors({ origin: '*' }));
 
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: true
 })
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Error en el servidor' });
-});
+
 app.get('/', (req, res) => {
     res.send('Hola mundo')
 })
@@ -42,6 +36,23 @@ app.get('/ping', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
+
+
+
+app.get('/usuarios', async(req, res) => {
+    try {
+        const getUsersQuery = 'SELECT * FROM tb_usuarios';
+        const users = await pool.query(getUsersQuery);
+
+        return res.status(200).json(users.rows);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
+
+
+
 app.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
@@ -127,17 +138,4 @@ app.post('/obtenerIdUsuario', async(req, res) => {
 });
 app.listen(port, () => {
     console.log(`Servidor en ejecución en http://localhost:${port}`);
-});
-
-
-app.get('/usuarios', async(req, res) => {
-    try {
-        const getUsersQuery = 'SELECT * FROM tb_usuarios';
-        const users = await pool.query(getUsersQuery);
-
-        return res.status(200).json(users.rows);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Error en el servidor' });
-    }
 });
