@@ -10,13 +10,20 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json()); // Middleware para parsear solicitudes JSON
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: 'https://shyest-economies.000webhostapp.com', // Reemplaza con tu dominio
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: true
 })
-
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Error en el servidor' });
+});
 app.get('/', (req, res) => {
     res.send('Hola mundo')
 })
@@ -35,7 +42,7 @@ app.get('/ping', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
-app.get('/login', async(req, res) => {
+app.post('/login', async(req, res) => {
     try {
         const { email, password } = req.body;
 
