@@ -317,6 +317,7 @@ app.get('/listacitas', async(req, res) => {
     try {
         const getMascotasQuery = `
         SELECT
+        m.idcita,
         m.fecha,
         m.hora,
         m.razoncita,
