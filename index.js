@@ -371,7 +371,7 @@ app.put('/editarcita/:idcita', async(req, res) => {
         const productId = req.params.idcita;
         const { idmascota, fecha, hora, razoncita, observaciones } = req.body;
 
-        const updateProductQuery = 'UPDATE tb_mascotas SET idmascota = $1, fecha = $2, hora = $3, razoncita = $4, observaciones = $5 WHERE idcita = $6';
+        const updateProductQuery = 'UPDATE tb_citas SET idmascota = $1, fecha = $2, hora = $3, razoncita = $4, observaciones = $5 WHERE idcita = $6';
         const updateProductValues = [idmascota, fecha, hora, razoncita, observaciones, productId];
         await pool.query(updateProductQuery, updateProductValues);
 
