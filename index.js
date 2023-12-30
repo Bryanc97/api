@@ -352,7 +352,7 @@ app.post('/registrarcitas', async(req, res) => {
 });
 app.get('/citas/:idcita', async(req, res) => {
     try {
-        const productId = req.params.idmascota;
+        const productId = req.params.idcita;
         const getProductQuery = 'SELECT * FROM tb_citas WHERE idcita = $1';
         const product = await pool.query(getProductQuery, [productId]);
 
