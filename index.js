@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
     res.send('Hola mundo')
 })
 
-app.get('/ping', async (req, res) => {
+app.get('/ping', async(req, res) => {
     try {
         const result = await pool.query('SELECT * FROM tb_usuarios');
         return res.json(result.rows);
@@ -32,8 +32,8 @@ app.get('/ping', async (req, res) => {
     }
 });
 
-
-app.get('/usuarios', async (req, res) => {
+//*********USUARIOS */
+app.get('/usuarios', async(req, res) => {
     try {
         const getUsersQuery = 'SELECT * FROM tb_usuarios';
         const users = await pool.query(getUsersQuery);
@@ -176,6 +176,8 @@ app.post('/registrarproducto', async(req, res) => {
         console.error(error);
         return res.status(500).json({ error: 'Error en el servidor' });
     }
+
+
 });
 // Obtener un producto por su ID
 app.get('/producto/:idproducto', async(req, res) => {
@@ -231,18 +233,17 @@ app.delete('/eliminarproducto/:idproducto', async(req, res) => {
 app.get('/listamascotas', async(req, res) => {
     try {
         const getMascotasQuery = `
-            SELECT
-                m.idmascota,
-                m.nombre,
-                m.especie,
-                m.raza,
-                m.edad,
-                u.nombres,
-                u.apellidos
-            FROM
-                tb_mascotas m
-            JOIN
-                tb_usuarios u ON m.idusuarios = u.idusuarios
+        SELECT
+        m.idmascota,
+        m.nombre,
+        m.especie,
+        m.raza,
+        m.edad,
+        CONCAT(u.nombres, ' ', u.apellidos) AS nombre_completo
+    FROM
+        tb_mascotas m
+    JOIN
+        tb_usuarios u ON m.idusuarios = u.idusuarios    
         `;
 
         const mascotas = await pool.query(getMascotasQuery);
@@ -267,7 +268,50 @@ app.post('/registrarmascota', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
+app.get('/mascota/:idmascota', async(req, res) => {
+    try {
+        const productId = req.params.idmascota;
+        const getProductQuery = 'SELECT * FROM tb_mascotas WHERE idmascota = $1';
+        const product = await pool.query(getProductQuery, [productId]);
 
+        if (product.rowCount === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+
+        return res.status(200).json(product.rows[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
+app.put('/editarmascota/:idmascota', async(req, res) => {
+    try {
+        const productId = req.params.idmascota;
+        const { idusuarios, nombre, especie, raza, edad } = req.body;
+
+        const updateProductQuery = 'UPDATE tb_mascotas SET idusuarios = $1, nombre = $2, especie = $3, raza = $4, edad = $5 WHERE idmascota = $6';
+        const updateProductValues = [idusuarios, nombre, especie, raza, edad, productId];
+        await pool.query(updateProductQuery, updateProductValues);
+
+        return res.status(200).json({ message: 'Producto actualizado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
+app.delete('/eliminarmascota/:idmascota', async(req, res) => {
+    try {
+        const productId = req.params.idmascota;
+
+        const deleteProductQuery = 'DELETE FROM tb_mascotas WHERE idmascota = $1';
+        await pool.query(deleteProductQuery, [productId]);
+
+        return res.status(200).json({ message: 'Producto eliminado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
 //**CITAS */
 app.get('/listacitas', async(req, res) => {
     try {
