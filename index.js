@@ -350,3 +350,47 @@ app.post('/registrarcitas', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
+app.get('/citas/:idcita', async(req, res) => {
+    try {
+        const productId = req.params.idmascota;
+        const getProductQuery = 'SELECT * FROM tb_citas WHERE idcita = $1';
+        const product = await pool.query(getProductQuery, [productId]);
+
+        if (product.rowCount === 0) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+
+        return res.status(200).json(product.rows[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
+app.put('/editarcita/:idcita', async(req, res) => {
+    try {
+        const productId = req.params.idcita;
+        const { idmascota, fecha, hora, razoncita, observaciones } = req.body;
+
+        const updateProductQuery = 'UPDATE tb_mascotas SET idmascota = $1, fecha = $2, hora = $3, razoncita = $4, observaciones = $5 WHERE idcita = $6';
+        const updateProductValues = [idmascota, fecha, hora, razoncita, observaciones, productId];
+        await pool.query(updateProductQuery, updateProductValues);
+
+        return res.status(200).json({ message: 'Producto actualizado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
+app.delete('/eliminarcita/:idcita', async(req, res) => {
+    try {
+        const productId = req.params.idcita;
+
+        const deleteProductQuery = 'DELETE FROM tb_citas WHERE idcita = $1';
+        await pool.query(deleteProductQuery, [productId]);
+
+        return res.status(200).json({ message: 'Producto eliminado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
