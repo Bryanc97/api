@@ -66,7 +66,19 @@ app.post('/login', async(req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
+app.get('/perfiluser/:idusuarios', async(req, res) => {
+    const idusuario = req.params.idusuarios;
 
+    try {
+        const getPropertiesQuery = 'SELECT * FROM tb_usuarios WHERE idusuarios = $1';
+        const properties = await pool.query(getPropertiesQuery, [idusuario]);
+
+        return res.status(200).json(properties.rows);
+    } catch (error) {
+        console.error('Error retrieving properties:', error);
+        return res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
 app.post('/register', async(req, res) => {
     try {
         const { cedula, nombres, apellidos, telefono, email, password, tipo } = req.body;
